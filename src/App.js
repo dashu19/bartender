@@ -56,12 +56,66 @@ import './App.css';
 //   }
 // }
 
-class Bartender extends React.Component {
+// function fetchtest(){
+//   console.log('fetch test start');
+//   let array = [];
+//   fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json')
+//     .then(function(response){
+//       return response.json();
+//     })
+//     .then(function(data){
+//       array.push(JSON.stringify(data));
+//       console.log(array);
+//     });
+//   console.log(array);
+//   return array;
+//   // return JSON.stringify(data);
+//   //console.log(data);
+// }
 
-  render(){
-    return(
-      <div className="Bartender">Dummy</div>
-    );
+
+class Bartender extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      initial: false,
+      data: 'initial'
+    };
+  }
+
+  fetchtest = () => {
+    let mydata = "fetchinitial";
+    fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json')
+      .then(response => {
+          return response.json();
+      })
+      .then(data => {
+          mydata = JSON.stringify(data);
+          // console.log(mydata);
+          this.setState({data: mydata});
+      })
+      .catch(err => {
+        console.log('error using fetch');
+      });
+      console.log('before return');
+      console.log(mydata);
+      return mydata;
+  }
+
+  componentDidMount = () => {
+    this.fetchtest();
+  }
+
+  render = () => {
+    if (this.state.initial === true){
+      return(
+        <div className="Bartender">true</div>
+      );
+    } else {
+      return(
+        <div className="Bartender">false</div>
+      );
+    }
   }
 }
 
