@@ -83,6 +83,10 @@ class Bartender extends React.Component {
     };
   }
 
+  dummy(){
+    return 'doesthiswork?';
+  }
+
   fetchtest = () => {
     let mydata = "fetchinitial";
     fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json')
@@ -106,23 +110,39 @@ class Bartender extends React.Component {
     const response = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json');
     const json = await response.json();
     let processed = json.query.pages['736'].links[0].title;
+    processed = JSON.stringify(processed);
+    console.log(processed);
+    processed = 'hello';
+    return processed;
+  }
+
+  fetchtest3 = async () => {
+    const response = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json');
+    const json = await response.json();
+    let processed = json.query.pages['736'].links[3].title;
     console.log(processed);
     return processed;
   }
 
+  fetchcaller = () => {
+    return this.fetchtest3();
+  }
+
   componentDidMount = async () => {
-    await this.fetchtest2();
+    let myvar = await this.fetchtest3();
+    this.setState({data: myvar});
     console.log('last from did mount');
   }
 
   render = () => {
+    let string = this.state.data;
     if (this.state.initial === true){
       return(
-        <div className="Bartender">true</div>
+        <div className="Bartender">{string}</div>
       );
     } else {
       return(
-        <div className="Bartender">false</div>
+        <div className="Bartender">{string}</div>
       );
     }
   }
