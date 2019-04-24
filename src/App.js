@@ -102,8 +102,17 @@ class Bartender extends React.Component {
       return mydata;
   }
 
-  componentDidMount = () => {
-    this.fetchtest();
+  fetchtest2 = async () => {
+    const response = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json');
+    const json = await response.json();
+    let processed = json.query.pages['736'].links[0].title;
+    console.log(processed);
+    return processed;
+  }
+
+  componentDidMount = async () => {
+    await this.fetchtest2();
+    console.log('last from did mount');
   }
 
   render = () => {
