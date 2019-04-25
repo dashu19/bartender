@@ -83,55 +83,18 @@ class Bartender extends React.Component {
     };
   }
 
-  dummy(){
-    return 'doesthiswork?';
-  }
 
-  fetchtest = () => {
-    let mydata = "fetchinitial";
-    fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json')
-      .then(response => {
-          return response.json();
-      })
-      .then(data => {
-          mydata = JSON.stringify(data);
-          // console.log(mydata);
-          this.setState({data: mydata});
-      })
-      .catch(err => {
-        console.log('error using fetch');
-      });
-      console.log('before return');
-      console.log(mydata);
-      return mydata;
-  }
-
-  fetchtest2 = async () => {
-    const response = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json');
-    const json = await response.json();
-    let processed = json.query.pages['736'].links[0].title;
-    processed = JSON.stringify(processed);
-    console.log(processed);
-    processed = 'hello';
-    return processed;
-  }
 
   fetchtest3 = async () => {
     const response = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json');
     const json = await response.json();
     let processed = json.query.pages['736'].links[3].title;
-    console.log(processed);
-    return processed;
+    this.setState({data: processed});
   }
 
-  fetchcaller = () => {
-    return this.fetchtest3();
-  }
 
   componentDidMount = async () => {
-    let myvar = await this.fetchtest3();
-    this.setState({data: myvar});
-    console.log('last from did mount');
+    await this.fetchtest3();
   }
 
   render = () => {
