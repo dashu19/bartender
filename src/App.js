@@ -101,14 +101,32 @@ class Bartender extends React.Component {
     this.setState({initial: false})
   }
 
-  getDrinkInfo = async () => {
+  getDrinkInfo = async (n) => {
     const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&redirects=true&section=0&format=json&page=';
-    const url1 = url + this.state.data[53];
+    const url1 = url + this.state.data[n];
     const response = await fetch(url1);
     const json = await response.json();
-    let parsed = json.parse.pageid;
+    let parsed = this.parseInfobox(json.parse.wikitext['*']);
     console.log(typeof parsed);
     console.log(parsed);
+  }
+
+  parseInfobox = (wikitext) => {
+    let cleaned = wikitext;
+    cleaned = cleaned.slice(cleaned.indexOf('{{Infobox'));
+    cleaned = cleaned.slice(2, cleaned.indexOf("\n}}\n"));
+    cleaned = cleaned.split('\n|');
+    for (let i = 0; i < cleaned.length; i++){
+      cleaned[i] = cleaned[i].trim();
+      cleaned[i] = cleaned[i].split('=');
+      for (let j = 0; j < cleaned[i].length; j++){
+        cleaned[i][j] = cleaned[i][j].trim();
+      }
+    }
+    //let end = cleaned.indexOf('}}');
+    //cleaned.slice(start, end);
+    return cleaned;
+
   }
 
   getPageIDs = async () => {
@@ -140,8 +158,9 @@ class Bartender extends React.Component {
   componentDidMount = async () => {
     //await this.fetchtest3();
     await this.getDrinkList();
-    await this.getDrinkInfo();
-    await this.getPageIDs();
+    await this.getDrinkInfo(53);
+    await this.getDrinkInfo(0);
+    //await this.getPageIDs();
     console.log('endofdidmount');
   }
 
