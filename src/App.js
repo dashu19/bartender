@@ -102,13 +102,22 @@ class Bartender extends React.Component {
   }
 
   getDrinkInfo = async () => {
-    const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&section=0&format=json&page=';
+    const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&redirects=true&section=0&format=json&page=';
     const url1 = url + this.state.data[53];
     const response = await fetch(url1);
     const json = await response.json();
-    let parsed = json.parse.wikitext['*'];
+    let parsed = json.parse.pageid;
     console.log(typeof parsed);
     console.log(parsed);
+  }
+
+  getPageIDs = async () => {
+    const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&format=json&redirects=true&prop=&page=';
+    for (let i = 0; i < this.state.data.length; i++){
+      let response = await fetch(url+this.state.data[i]);
+      let json = await response.json();
+      console.log(json.parse.pageid, json.parse.title);
+    }
   }
 
   fetchtest3 = async () => {
@@ -132,6 +141,7 @@ class Bartender extends React.Component {
     //await this.fetchtest3();
     await this.getDrinkList();
     await this.getDrinkInfo();
+    await this.getPageIDs();
     console.log('endofdidmount');
   }
 
