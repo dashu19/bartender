@@ -46,9 +46,7 @@ class Bartender extends React.Component {
       let dirty = json.parse.wikitext['*'];
       let cleaned = this.parseList(dirty);
       for (let j = 0; j < cleaned.length;j++){
-        if(!cleaned[j][0].includes('#')){
           drinklist.push(cleaned[j]);
-        }
       }
     }
     // this.setState({drinklinks: drinklist});
@@ -83,30 +81,41 @@ class Bartender extends React.Component {
     let parsed = this.parseInfobox(json.parse.wikitext['*'],link[link.length - 1]);
     // console.log(typeof parsed);
     // console.log(parsed);
-    this.setState({name:link[link.length - 1]});
+    this.setState({name:parsed.name});
     this.setState({served:parsed.served});
     this.setState({garnished:parsed.garnished});
     this.setState({drinkware:parsed.drinkware});
     this.setState({ingredients:parsed.ingredients});
     this.setState({prep:parsed.prep});
     this.setState({timing:parsed.timing});
-    console.log(n, this.state.drinklinks[n], parsed.ingredients);
+    console.log(n, this.state.drinklinks[n], parsed.name);
   }
 
-  parseInfobox = (wikitext, flag, name) => {
+  parseInfobox = (wikitext, name) => {
     let drink = {}
     let cleaned = wikitext;
-    //cleaned = cleaned.slice(0, cleaned.indexOf("\n}}\n["));
-    // let count = (cleaned.match(/nfobox/g) || []).length;
-    // if (count > 1){
-    //   cleaned = cleaned.split('nfobox');
-    //   for (let i = 0; i<cleaned.length;i++)
-    //   }
-    // }
 
-    cleaned = cleaned.slice(cleaned.indexOf('nfobox'));
+    let count = (cleaned.match(/nfobox/g) || []).length;
+    if (count>1){
+      let infoboxflag = true;
+      let nextinfobox = -50;
+      let endinfobox = -50;
+      let nameindex = -50;
+      while(infoboxflag){
+        cleaned = cleaned.slice(cleaned.indexOf('nfobox')+6);
+        nextinfobox = cleaned.indexOf('nfobox');
+        endinfobox = cleaned.indexOf('\n}}\n');
+        nameindex = cleaned.indexOf(name);
+        if (nextinfobox===-1 || endinfobox > nameindex){
+          infoboxflag = false;
+        }
+      }
+    } else{
+      cleaned = cleaned.slice(cleaned.indexOf('nfobox')+6);
+    }
+
     cleaned = cleaned.slice(0, cleaned.indexOf("\n}}\n"));
-
+    cleaned = cleaned.replace(/\* /g, '*');
 
     if(cleaned.indexOf('\n|')===-1){
       cleaned = cleaned.slice(cleaned.indexOf('\ n|')+4);
