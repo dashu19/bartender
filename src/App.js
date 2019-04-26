@@ -7,7 +7,14 @@ class Bartender extends React.Component {
     this.state = {
       initial: true,
       drinklinks: [],
-      drink: null
+      drink: null,
+      name: null,
+      served: null,
+      garnish: null,
+      drinkware: null,
+      ingredients: null,
+      prep: null,
+      timing: null,
     };
   }
 
@@ -34,20 +41,23 @@ class Bartender extends React.Component {
     let parsed = this.parseInfobox(json.parse.wikitext['*']);
     // console.log(typeof parsed);
     // console.log(parsed);
-    this.setState({drink:parsed});
+    //this.setState({name:parsed.name});
+    console.log(n, this.state.drinklinks[n], parsed.name);
   }
 
   parseInfobox = (wikitext) => {
     let drink = {}
     let cleaned = wikitext;
-    cleaned = cleaned.slice(cleaned.indexOf('{{Infobox'));
-    cleaned = cleaned.slice(2, cleaned.indexOf("\n}}\n"));
+    cleaned = cleaned.slice(cleaned.indexOf('\n|')+3);
+    cleaned = cleaned.slice(0, cleaned.indexOf("\n}}\n"));
     cleaned = cleaned.split('\n|');
     for (let i = 0; i < cleaned.length; i++){
       cleaned[i] = cleaned[i].trim();
       cleaned[i] = cleaned[i].split('=');
       for (let j = 0; j < cleaned[i].length; j++){
         cleaned[i][j] = cleaned[i][j].trim();
+        cleaned[i][j] = cleaned[i][j].replace(/]/g,'');
+        cleaned[i][j] = cleaned[i][j].replace(/[[]/g,'');
       }
       if (cleaned[i][0] === "name"){
         drink.name = cleaned[i][1];
@@ -67,6 +77,12 @@ class Bartender extends React.Component {
     }
     return drink;
 
+  }
+
+  getDrink = async () => {
+    for (let i = 0; i <this.state.drinklinks.length;i++){
+      await this.getDrinkInfo(i);
+    }
   }
 
   // getPageIDs = async () => {
@@ -98,22 +114,23 @@ class Bartender extends React.Component {
   componentDidMount = async () => {
     //await this.fetchtest3();
     await this.getDrinkLinks();
-    await this.getDrinkInfo(53);
-    await this.getDrinkInfo(0);
+    await this.getDrinkInfo(10);
+    // await this.getDrinkInfo(0);
     //await this.getPageIDs();
     console.log('endofdidmount');
   }
 
+  componentDidUpdate = () => {
+    // console.log(this.state.drink);
+  }
+
   render = () => {
-    if (this.state.initial === true){
-      return(
-        <div className="Bartender"></div>
-      );
-    } else {
-      return(
-        <div className="Bartender"><ul>{this.dummylist()}</ul></div>
-      );
-    }
+    return(
+      <div>
+        <button className="Bartender-button" onClick={() => this.getDrink()}>Make me a drink!</button>
+        <div>{this.state.name}</div>
+      </div>
+    );
   }
 }
 
