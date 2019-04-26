@@ -23,21 +23,6 @@ class Bartender extends React.Component {
 
   getDrinkLinks = async () => {
     let drinklist = [];
-    const url = 'https://en.wikipedia.org/w/api.php?action=parse&pageid=8702622&origin=*&prop=links&format=json&section=';
-    const sections = ['2', '3', '4'];
-    for (var i = 0; i < 3; i++){
-      let response = await fetch(url+sections[i]);
-      let json = await response.json();
-      json.parse.links.forEach(function(item){
-        drinklist.push(item['*']);
-      });
-    }
-    this.setState({drinklinks: drinklist});
-    this.setState({initial: false});
-  }
-
-  getDrinkLinks2 = async () => {
-    let drinklist = [];
     const url = 'https://en.wikipedia.org/w/api.php?action=parse&pageid=8702622&origin=*&prop=wikitext&format=json&section=';
     const sections = ['2', '3', '4'];
     for (var i = 0; i < 3; i++){
@@ -79,60 +64,91 @@ class Bartender extends React.Component {
     const response = await fetch(url1);
     const json = await response.json();
     let parsed = this.parseInfobox(json.parse.wikitext['*'],link[link.length - 1]);
-    // console.log(typeof parsed);
-    // console.log(parsed);
     this.setState({name:parsed.name});
     this.setState({served:parsed.served});
-    this.setState({garnished:parsed.garnished});
+    this.setState({garnish:parsed.garnish});
     this.setState({drinkware:parsed.drinkware});
     this.setState({ingredients:parsed.ingredients});
     this.setState({prep:parsed.prep});
-    this.setState({timing:parsed.timing});
-    console.log(n, this.state.drinklinks[n], parsed.name);
+    console.log(n, parsed.name, parsed.prep);
   }
 
   parseInfobox = (wikitext, name) => {
     let drink = {}
     let cleaned = wikitext;
 
+    //DONE: Get correct infobox
     let count = (cleaned.match(/nfobox/g) || []).length;
     if (count>1){
       let infoboxflag = true;
-      let nextinfobox = -50;
       let endinfobox = -50;
       let nameindex = -50;
       while(infoboxflag){
         cleaned = cleaned.slice(cleaned.indexOf('nfobox')+6);
-        nextinfobox = cleaned.indexOf('nfobox');
         endinfobox = cleaned.indexOf('\n}}\n');
         nameindex = cleaned.indexOf(name);
-        if (nextinfobox===-1 || endinfobox > nameindex){
+        if (endinfobox > nameindex){
           infoboxflag = false;
         }
       }
     } else{
       cleaned = cleaned.slice(cleaned.indexOf('nfobox')+6);
     }
-
     cleaned = cleaned.slice(0, cleaned.indexOf("\n}}\n"));
+
+    //TODO?: Universal cleans
     cleaned = cleaned.replace(/\* /g, '*');
 
-    if(cleaned.indexOf('\n|')===-1){
-      cleaned = cleaned.slice(cleaned.indexOf('\ n|')+4);
-      cleaned = cleaned.split('\n |');
-    } else {
-      cleaned = cleaned.slice(cleaned.indexOf('\n|')+3);
-      cleaned = cleaned.split('\n|');
-    }
+    //DONE: Split infobox wikitext by line and remove '|' character
+    cleaned = cleaned.split('\n|');
 
     for (let i = 0; i < cleaned.length; i++){
       cleaned[i] = cleaned[i].trim();
+
+      //DONE: Remove internal wikilinks from wikitext markup
+      let openbracketindex = -50;
+      let barindex = -50;
+      let closebracketindex = -50;
+      while (cleaned[i].includes('[[')){
+        openbracketindex = cleaned[i].indexOf('[[');
+        barindex = cleaned[i].indexOf('|');
+        closebracketindex = cleaned[i].indexOf(']]');
+        if (openbracketindex < barindex && barindex < closebracketindex){
+          cleaned[i] = cleaned[i].slice(0,openbracketindex+2) + cleaned[i].slice(barindex+1);
+        }
+        cleaned[i] = cleaned[i].replace('[[','');
+        cleaned[i] = cleaned[i].replace(']]','');
+      }
+
+      //DONE: Remove braces references from wikitext markup
+      let openbracesindex = -50;
+      let closebracesindex = -50;
+      while (cleaned[i].includes('{{')){
+        openbracesindex = cleaned[i].indexOf('{{');
+        closebracesindex = cleaned[i].indexOf('}}');
+        cleaned[i] = cleaned[i].slice(0,openbracesindex+2) + cleaned[i].slice(closebracesindex);
+        cleaned[i] = cleaned[i].replace('{{','');
+        cleaned[i] = cleaned[i].replace('}}','');
+      }
+
+      //DONE: Remove html like tags from wikitext markup
+      let opentagindex = -50;
+      let closetagindex = -50;
+      while (cleaned[i].includes('<')){
+        opentagindex = cleaned[i].indexOf('<');
+        closetagindex = cleaned[i].indexOf('>');
+        cleaned[i] = cleaned[i].slice(0,opentagindex) + cleaned[i].slice(closetagindex+1);
+        // cleaned[i] = cleaned[i].replace('<','');
+        // cleaned[i] = cleaned[i].replace('>','');
+      }
+
+      //DONE: Split and clean each line entry into key value pairs
       cleaned[i] = cleaned[i].split('=');
       for (let j = 0; j < cleaned[i].length; j++){
         cleaned[i][j] = cleaned[i][j].trim();
-        cleaned[i][j] = cleaned[i][j].replace(/]/g,'');
-        cleaned[i][j] = cleaned[i][j].replace(/[[]/g,'');
       }
+
+      //DONE: Add key value pairs to drink object
       if (cleaned[i][0] === "name"){
         drink.name = cleaned[i][1];
       } else if (cleaned[i][0] === "served"){
@@ -146,13 +162,9 @@ class Bartender extends React.Component {
         drink.ingredients = dirtyingredients.split('\n');
       } else if (cleaned[i][0] === "prep"){
         drink.prep = cleaned[i][1];
-      } else if (cleaned[i][0] === "timing"){
-        drink.timing = cleaned[i][1];
       }
     }
-    //console.log(drink);
     return drink;
-
   }
 
   getDrink = async () => {
@@ -191,7 +203,7 @@ class Bartender extends React.Component {
 
   componentDidMount = async () => {
     //await this.fetchtest3();
-    await this.getDrinkLinks2();
+    await this.getDrinkLinks();
     await this.getDrinkInfo(48);
     await this.getDrinkInfo(51);
     // await this.getDrinkInfo(0);
