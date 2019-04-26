@@ -30,7 +30,43 @@ class Bartender extends React.Component {
       });
     }
     this.setState({drinklinks: drinklist});
-    this.setState({initial: false})
+    this.setState({initial: false});
+  }
+
+  getDrinkLinks2 = async () => {
+    let drinklist = [];
+    const url = 'https://en.wikipedia.org/w/api.php?action=parse&pageid=8702622&origin=*&prop=wikitext&format=json&section=';
+    const sections = ['2', '3', '4'];
+    for (var i = 0; i < 3; i++){
+      let response = await fetch(url+sections[i]);
+      let json = await response.json();
+      let dirty = json.parse.wikitext['*'];
+      let cleaned = this.parseList(dirty);
+      for (let j = 0; j < cleaned.length;j++){
+        drinklist.push(cleaned[j][0]);
+      }
+    }
+    // this.setState({drinklinks: drinklist});
+    // this.setState({initial: false})
+    console.log(typeof drinklist);
+    console.log(drinklist);
+    this.setState({drinklinks: drinklist});
+    this.setState({initial: false});
+  }
+
+  parseList = (wikitext) =>{
+    let cleaned = wikitext;
+    cleaned = cleaned.slice(cleaned.indexOf('*'));
+    cleaned = cleaned.slice(1,cleaned.indexOf('\n{{'));
+    cleaned = cleaned.replace(/]/g,'');
+    cleaned = cleaned.replace(/[[]/g,'');
+    cleaned = cleaned.split('\n*');
+    for (let i = 0; i<cleaned.length;i++){
+      cleaned[i] = cleaned[i].trim();
+      cleaned[i] = cleaned[i].split('|');
+    }
+    //console.log('in parseList', cleaned);
+    return cleaned;
   }
 
   getDrinkInfo = async (n) => {
@@ -48,9 +84,15 @@ class Bartender extends React.Component {
   parseInfobox = (wikitext) => {
     let drink = {}
     let cleaned = wikitext;
-    cleaned = cleaned.slice(cleaned.indexOf('\n|')+3);
-    cleaned = cleaned.slice(0, cleaned.indexOf("\n}}\n"));
-    cleaned = cleaned.split('\n|');
+    //cleaned = cleaned.slice(0, cleaned.indexOf("\n}}\n["));
+    if(cleaned.indexOf('\n|')===-1){
+      cleaned = cleaned.slice(cleaned.indexOf('\ n|')+4);
+      cleaned = cleaned.split('\n |');
+    } else {
+      cleaned = cleaned.slice(cleaned.indexOf('\n|')+3);
+      cleaned = cleaned.split('\n|');
+    }
+
     for (let i = 0; i < cleaned.length; i++){
       cleaned[i] = cleaned[i].trim();
       cleaned[i] = cleaned[i].split('=');
@@ -83,6 +125,7 @@ class Bartender extends React.Component {
     for (let i = 0; i <this.state.drinklinks.length;i++){
       await this.getDrinkInfo(i);
     }
+    // this.getDrinkLinks2();
   }
 
   // getPageIDs = async () => {
@@ -113,8 +156,9 @@ class Bartender extends React.Component {
 
   componentDidMount = async () => {
     //await this.fetchtest3();
-    await this.getDrinkLinks();
-    await this.getDrinkInfo(10);
+    await this.getDrinkLinks2();
+    await this.getDrinkInfo(48);
+    await this.getDrinkInfo(51);
     // await this.getDrinkInfo(0);
     //await this.getPageIDs();
     console.log('endofdidmount');
