@@ -21,6 +21,7 @@ class Bartender extends React.Component {
     };
   }
 
+  //Get list of IBA drinks from IBA cocktail page on wikipedia
   getDrinkLinks = async () => {
     let drinklist = [];
     const url = 'https://en.wikipedia.org/w/api.php?action=parse&pageid=8702622&origin=*&prop=wikitext&format=json&section=';
@@ -34,14 +35,11 @@ class Bartender extends React.Component {
           drinklist.push(cleaned[j]);
       }
     }
-    // this.setState({drinklinks: drinklist});
-    // this.setState({initial: false})
-    console.log(typeof drinklist);
-    console.log(drinklist);
     this.setState({drinklinks: drinklist});
     this.setState({initial: false});
   }
 
+  //Parses wikitext to get list of drinks, takes string json string from getDrinkLinks()
   parseList = (wikitext) =>{
     let cleaned = wikitext;
     cleaned = cleaned.slice(cleaned.indexOf('*'));
@@ -53,10 +51,10 @@ class Bartender extends React.Component {
       cleaned[i] = cleaned[i].trim();
       cleaned[i] = cleaned[i].split('|');
     }
-    //console.log('in parseList', cleaned);
     return cleaned;
   }
 
+  //Takes an integer and fetches the matching drink link from this.state.drinklinks (by index) info from the wikipedia api
   getDrinkInfo = async (n) => {
     const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&redirects=true&format=json&page=';
     const link = this.state.drinklinks[n];
@@ -73,6 +71,7 @@ class Bartender extends React.Component {
     console.log(n, parsed.name, parsed.prep);
   }
 
+  //Takes text from fetched JSON from getDrinkInfo() and parses it, and stores data into an object
   parseInfobox = (wikitext, name) => {
     let drink = {}
     let cleaned = wikitext;
@@ -126,9 +125,7 @@ class Bartender extends React.Component {
       while (cleaned[i].includes('{{')){
         openbracesindex = cleaned[i].indexOf('{{');
         closebracesindex = cleaned[i].indexOf('}}');
-        cleaned[i] = cleaned[i].slice(0,openbracesindex+2) + cleaned[i].slice(closebracesindex);
-        cleaned[i] = cleaned[i].replace('{{','');
-        cleaned[i] = cleaned[i].replace('}}','');
+        cleaned[i] = cleaned[i].slice(0,openbracesindex) + cleaned[i].slice(closebracesindex+2);
       }
 
       //DONE: Remove html like tags from wikitext markup
@@ -138,8 +135,6 @@ class Bartender extends React.Component {
         opentagindex = cleaned[i].indexOf('<');
         closetagindex = cleaned[i].indexOf('>');
         cleaned[i] = cleaned[i].slice(0,opentagindex) + cleaned[i].slice(closetagindex+1);
-        // cleaned[i] = cleaned[i].replace('<','');
-        // cleaned[i] = cleaned[i].replace('>','');
       }
 
       //DONE: Split and clean each line entry into key value pairs
@@ -167,47 +162,16 @@ class Bartender extends React.Component {
     return drink;
   }
 
+  //Handles click
   getDrink = async () => {
-    for (let i = 0; i <this.state.drinklinks.length;i++){
-      await this.getDrinkInfo(i);
-    }
-    // this.getDrinkLinks2();
-    // this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
+    // for (let i = 0; i <this.state.drinklinks.length;i++){
+    //   await this.getDrinkInfo(i);
+    // }
+    this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
   }
-
-  // getPageIDs = async () => {
-  //   const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&format=json&redirects=true&prop=&page=';
-  //   for (let i = 0; i < this.state.drinklinks.length; i++){
-  //     let response = await fetch(url+this.state.drinklinks[i]);
-  //     let json = await response.json();
-  //     console.log(json.parse.pageid, json.parse.title);
-  //   }
-  // }
-
-  // fetchtest3 = async () => {
-  //   const response = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json');
-  //   const json = await response.json();
-  //   let processed = json.query.pages['736'].links[3].title;
-  //   this.setState({data: processed});
-  // }
-
-  dummylist = () => {
-    let ret = []
-    this.state.drinklinks.forEach(function(item, i){
-      ret.push(<li key={i}>{item}</li>);
-    });
-    return ret;
-
-  }
-
 
   componentDidMount = async () => {
-    //await this.fetchtest3();
     await this.getDrinkLinks();
-    await this.getDrinkInfo(48);
-    await this.getDrinkInfo(51);
-    // await this.getDrinkInfo(0);
-    //await this.getPageIDs();
     console.log('endofdidmount');
   }
 
