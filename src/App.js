@@ -133,7 +133,8 @@ class Bartender extends React.Component {
       } else if (cleaned[i][0] === "drinkware"){
         drink.drinkware = cleaned[i][1];
       } else if (cleaned[i][0] === "ingredients"){
-        drink.ingredients = cleaned[i][1].split('\n');
+        let dirtyingredients = cleaned[i][1].replace(/[*]/g,'');
+        drink.ingredients = dirtyingredients.split('\n');
       } else if (cleaned[i][0] === "prep"){
         drink.prep = cleaned[i][1];
       } else if (cleaned[i][0] === "timing"){
@@ -146,11 +147,11 @@ class Bartender extends React.Component {
   }
 
   getDrink = async () => {
-    // for (let i = 0; i <this.state.drinklinks.length;i++){
-    //   await this.getDrinkInfo(i);
-    // }
+    for (let i = 0; i <this.state.drinklinks.length;i++){
+      await this.getDrinkInfo(i);
+    }
     // this.getDrinkLinks2();
-    this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
+    // this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
   }
 
   // getPageIDs = async () => {
