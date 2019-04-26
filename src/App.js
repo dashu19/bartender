@@ -1,6 +1,9 @@
 import React from 'react';
 import './App.css';
 
+//still need to figure out how to handle drinks that are variations, '#' in the linke
+//still need to figure out how to handle infoboxs that dont haveinformation
+
 class Bartender extends React.Component {
   constructor(props){
     super(props);
@@ -43,7 +46,9 @@ class Bartender extends React.Component {
       let dirty = json.parse.wikitext['*'];
       let cleaned = this.parseList(dirty);
       for (let j = 0; j < cleaned.length;j++){
-        drinklist.push(cleaned[j][0]);
+        if(!cleaned[j][0].includes('#')){
+          drinklist.push(cleaned[j]);
+        }
       }
     }
     // this.setState({drinklinks: drinklist});
@@ -70,21 +75,39 @@ class Bartender extends React.Component {
   }
 
   getDrinkInfo = async (n) => {
-    const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&redirects=true&section=0&format=json&page=';
-    const url1 = url + this.state.drinklinks[n];
+    const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&redirects=true&format=json&page=';
+    const link = this.state.drinklinks[n];
+    const url1 = url + link[0];
     const response = await fetch(url1);
     const json = await response.json();
-    let parsed = this.parseInfobox(json.parse.wikitext['*']);
+    let parsed = this.parseInfobox(json.parse.wikitext['*'],link[link.length - 1]);
     // console.log(typeof parsed);
     // console.log(parsed);
-    //this.setState({name:parsed.name});
-    console.log(n, this.state.drinklinks[n], parsed.name);
+    this.setState({name:link[link.length - 1]});
+    this.setState({served:parsed.served});
+    this.setState({garnished:parsed.garnished});
+    this.setState({drinkware:parsed.drinkware});
+    this.setState({ingredients:parsed.ingredients});
+    this.setState({prep:parsed.prep});
+    this.setState({timing:parsed.timing});
+    console.log(n, this.state.drinklinks[n], parsed.ingredients);
   }
 
-  parseInfobox = (wikitext) => {
+  parseInfobox = (wikitext, flag, name) => {
     let drink = {}
     let cleaned = wikitext;
     //cleaned = cleaned.slice(0, cleaned.indexOf("\n}}\n["));
+    // let count = (cleaned.match(/nfobox/g) || []).length;
+    // if (count > 1){
+    //   cleaned = cleaned.split('nfobox');
+    //   for (let i = 0; i<cleaned.length;i++)
+    //   }
+    // }
+
+    cleaned = cleaned.slice(cleaned.indexOf('nfobox'));
+    cleaned = cleaned.slice(0, cleaned.indexOf("\n}}\n"));
+
+
     if(cleaned.indexOf('\n|')===-1){
       cleaned = cleaned.slice(cleaned.indexOf('\ n|')+4);
       cleaned = cleaned.split('\n |');
@@ -117,15 +140,17 @@ class Bartender extends React.Component {
         drink.timing = cleaned[i][1];
       }
     }
+    //console.log(drink);
     return drink;
 
   }
 
   getDrink = async () => {
-    for (let i = 0; i <this.state.drinklinks.length;i++){
-      await this.getDrinkInfo(i);
-    }
+    // for (let i = 0; i <this.state.drinklinks.length;i++){
+    //   await this.getDrinkInfo(i);
+    // }
     // this.getDrinkLinks2();
+    this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
   }
 
   // getPageIDs = async () => {
@@ -173,6 +198,12 @@ class Bartender extends React.Component {
       <div>
         <button className="Bartender-button" onClick={() => this.getDrink()}>Make me a drink!</button>
         <div>{this.state.name}</div>
+        <div>{this.state.served}</div>
+        <div>{this.state.garnished}</div>
+        <div>{this.state.drinkware}</div>
+        <div>{this.state.ingredients}</div>
+        <div>{this.state.prep}</div>
+        <div>{this.state.timing}</div>
       </div>
     );
   }
