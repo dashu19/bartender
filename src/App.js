@@ -1,90 +1,17 @@
 import React from 'react';
-// import logo from './logo.svg';
 import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// class Dummy extends React.Component{
-//   render = () => {
-//     return(
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <Welcome />
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//
-//     );
-//   }
-// }
-//
-// class Welcome extends React.Component{
-//   render(){
-//     return(
-//       <h1 className="App-title">blah blah blah</h1>
-//     );
-//   }
-// }
-
-// function fetchtest(){
-//   console.log('fetch test start');
-//   let array = [];
-//   fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json')
-//     .then(function(response){
-//       return response.json();
-//     })
-//     .then(function(data){
-//       array.push(JSON.stringify(data));
-//       console.log(array);
-//     });
-//   console.log(array);
-//   return array;
-//   // return JSON.stringify(data);
-//   //console.log(data);
-// }
-
 
 class Bartender extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       initial: true,
-      data: 'initial',
-      drinklinks: []
+      drinklinks: [],
+      drink: null
     };
   }
 
-  getDrinkList = async () => {
+  getDrinkLinks = async () => {
     let drinklist = [];
     const url = 'https://en.wikipedia.org/w/api.php?action=parse&pageid=8702622&origin=*&prop=links&format=json&section=';
     const sections = ['2', '3', '4'];
@@ -95,23 +22,23 @@ class Bartender extends React.Component {
         drinklist.push(item['*']);
       });
     }
-
-    // console.log(drinklist);
-    this.setState({data: drinklist});
+    this.setState({drinklinks: drinklist});
     this.setState({initial: false})
   }
 
   getDrinkInfo = async (n) => {
     const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&redirects=true&section=0&format=json&page=';
-    const url1 = url + this.state.data[n];
+    const url1 = url + this.state.drinklinks[n];
     const response = await fetch(url1);
     const json = await response.json();
     let parsed = this.parseInfobox(json.parse.wikitext['*']);
-    console.log(typeof parsed);
-    console.log(parsed);
+    // console.log(typeof parsed);
+    // console.log(parsed);
+    this.setState({drink:parsed});
   }
 
   parseInfobox = (wikitext) => {
+    let drink = {}
     let cleaned = wikitext;
     cleaned = cleaned.slice(cleaned.indexOf('{{Infobox'));
     cleaned = cleaned.slice(2, cleaned.indexOf("\n}}\n"));
@@ -122,32 +49,45 @@ class Bartender extends React.Component {
       for (let j = 0; j < cleaned[i].length; j++){
         cleaned[i][j] = cleaned[i][j].trim();
       }
+      if (cleaned[i][0] === "name"){
+        drink.name = cleaned[i][1];
+      } else if (cleaned[i][0] === "served"){
+        drink.served = cleaned[i][1];
+      } else if (cleaned[i][0] === "garnish"){
+        drink.garnish = cleaned[i][1];
+      } else if (cleaned[i][0] === "drinkware"){
+        drink.drinkware = cleaned[i][1];
+      } else if (cleaned[i][0] === "ingredients"){
+        drink.ingredients = cleaned[i][1].split('\n');
+      } else if (cleaned[i][0] === "prep"){
+        drink.prep = cleaned[i][1];
+      } else if (cleaned[i][0] === "timing"){
+        drink.timing = cleaned[i][1];
+      }
     }
-    //let end = cleaned.indexOf('}}');
-    //cleaned.slice(start, end);
-    return cleaned;
+    return drink;
 
   }
 
-  getPageIDs = async () => {
-    const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&format=json&redirects=true&prop=&page=';
-    for (let i = 0; i < this.state.data.length; i++){
-      let response = await fetch(url+this.state.data[i]);
-      let json = await response.json();
-      console.log(json.parse.pageid, json.parse.title);
-    }
-  }
+  // getPageIDs = async () => {
+  //   const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&format=json&redirects=true&prop=&page=';
+  //   for (let i = 0; i < this.state.drinklinks.length; i++){
+  //     let response = await fetch(url+this.state.drinklinks[i]);
+  //     let json = await response.json();
+  //     console.log(json.parse.pageid, json.parse.title);
+  //   }
+  // }
 
-  fetchtest3 = async () => {
-    const response = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json');
-    const json = await response.json();
-    let processed = json.query.pages['736'].links[3].title;
-    this.setState({data: processed});
-  }
+  // fetchtest3 = async () => {
+  //   const response = await fetch('https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=Albert+Einstein&prop=links&format=json');
+  //   const json = await response.json();
+  //   let processed = json.query.pages['736'].links[3].title;
+  //   this.setState({data: processed});
+  // }
 
   dummylist = () => {
     let ret = []
-    this.state.data.forEach(function(item, i){
+    this.state.drinklinks.forEach(function(item, i){
       ret.push(<li key={i}>{item}</li>);
     });
     return ret;
@@ -157,7 +97,7 @@ class Bartender extends React.Component {
 
   componentDidMount = async () => {
     //await this.fetchtest3();
-    await this.getDrinkList();
+    await this.getDrinkLinks();
     await this.getDrinkInfo(53);
     await this.getDrinkInfo(0);
     //await this.getPageIDs();
