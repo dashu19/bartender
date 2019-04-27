@@ -1,36 +1,4 @@
-/* .App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */
+@import url('https://fonts.googleapis.com/css?family=Spectral');
 
 .Bartender{
   text-align: center;
@@ -48,7 +16,7 @@
 .Bartender-button{
   text-align: center;
   text-transform: uppercase;
-  border: 1px solid white;
+  border: 0px solid white;
   outline: none;
   background-color: inherit;
   position: absolute;
@@ -61,6 +29,17 @@
   font-size: 20px;
   color: white;
   text-transform: uppercase;
+  font-family: 'Spectral', serif;
+  font-weight: 500;
+  transition: .5s;
+}
+
+.Bartender-button:hover{
+  color: darkgray;
+}
+
+.Bartender-button:active{
+  color: gray;
 }
 
 .Bartender-content{
@@ -73,4 +52,5 @@
 body{
   background-color: #21252B;
   color: #6B727D;
+  font-family: 'Spectral', serif;
 }

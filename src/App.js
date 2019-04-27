@@ -176,7 +176,7 @@ class Bartender extends React.Component {
 
   //Generates button
   generateButton = () => {
-    let buttontext = (this.state.clicked) ? 'Make me another!':'Make me a drink!';
+    let buttontext = (this.state.clicked) ? 'Another':'Surprise';
     return(
       <div className='Bartender-header'>
         <button className='Bartender-button' onClick={() => this.getDrink()}>{buttontext}</button>
@@ -190,7 +190,7 @@ class Bartender extends React.Component {
       <div className= "Bartender-content">
         <div>{this.state.name}</div>
         <div>{this.state.served}</div>
-        <div>{this.state.garnished}</div>
+        <div>{this.state.garnish}</div>
         <div>{this.state.drinkware}</div>
         <div>{this.state.ingredients}</div>
         <div>{this.state.prep}</div>
