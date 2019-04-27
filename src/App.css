@@ -35,3 +35,42 @@
 .Bartender{
   text-align: center;
 }
+
+.Bartender-header{
+  margin: auto;
+  margin-top: 150px;
+  border: 2px solid white;
+  height: 100px;
+  width: 400px;
+  position: relative;
+}
+
+.Bartender-button{
+  text-align: center;
+  text-transform: uppercase;
+  border: 1px solid white;
+  outline: none;
+  background-color: inherit;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 50px;
+  width: 300px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  font-size: 20px;
+  color: white;
+  text-transform: uppercase;
+}
+
+.Bartender-content{
+  margin: auto;
+  margin-top: none;
+  border: 2px solid white;
+  height: 500px;
+  width: 400px;
+}
+body{
+  background-color: #21252B;
+  color: #6B727D;
+}

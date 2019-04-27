@@ -9,6 +9,7 @@ class Bartender extends React.Component {
     super(props);
     this.state = {
       initial: true,
+      clicked: false,
       drinklinks: [],
       drink: null,
       name: null,
@@ -68,7 +69,7 @@ class Bartender extends React.Component {
     this.setState({drinkware:parsed.drinkware});
     this.setState({ingredients:parsed.ingredients});
     this.setState({prep:parsed.prep});
-    console.log(n, parsed.name, parsed.prep);
+    console.log(n, parsed.name, parsed.prep, 'end of getDrinkInfo');
   }
 
   //Takes text from fetched JSON from getDrinkInfo() and parses it, and stores data into an object
@@ -159,6 +160,7 @@ class Bartender extends React.Component {
         drink.prep = cleaned[i][1];
       }
     }
+    console.log('end of parseInfobox');
     return drink;
   }
 
@@ -167,7 +169,33 @@ class Bartender extends React.Component {
     // for (let i = 0; i <this.state.drinklinks.length;i++){
     //   await this.getDrinkInfo(i);
     // }
-    this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
+    await this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
+    await this.setState({clicked: true});
+    console.log('end of getDrink');
+  }
+
+  //Generates button
+  generateButton = () => {
+    let buttontext = (this.state.clicked) ? 'Make me another!':'Make me a drink!';
+    return(
+      <div className='Bartender-header'>
+        <button className='Bartender-button' onClick={() => this.getDrink()}>{buttontext}</button>
+      </div>
+    );
+  }
+
+  //Generates content
+  generateContent = () => {
+    return(
+      <div className= "Bartender-content">
+        <div>{this.state.name}</div>
+        <div>{this.state.served}</div>
+        <div>{this.state.garnished}</div>
+        <div>{this.state.drinkware}</div>
+        <div>{this.state.ingredients}</div>
+        <div>{this.state.prep}</div>
+      </div>
+    )
   }
 
   componentDidMount = async () => {
@@ -182,14 +210,8 @@ class Bartender extends React.Component {
   render = () => {
     return(
       <div>
-        <button className="Bartender-button" onClick={() => this.getDrink()}>Make me a drink!</button>
-        <div>{this.state.name}</div>
-        <div>{this.state.served}</div>
-        <div>{this.state.garnished}</div>
-        <div>{this.state.drinkware}</div>
-        <div>{this.state.ingredients}</div>
-        <div>{this.state.prep}</div>
-        <div>{this.state.timing}</div>
+        {this.generateButton()}
+        {this.generateContent()}
       </div>
     );
   }
