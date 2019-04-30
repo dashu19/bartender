@@ -69,7 +69,8 @@ class Bartender extends React.Component {
     this.setState({drinkware:parsed.drinkware});
     this.setState({ingredients:parsed.ingredients});
     this.setState({prep:parsed.prep});
-    console.log(n, parsed.name, parsed.prep, 'end of getDrinkInfo');
+    //console.log(n, parsed.name, parsed.drinkware, 'end of getDrinkInfo');
+    console.log(n, parsed.drinkware);
   }
 
   //Takes text from fetched JSON from getDrinkInfo() and parses it, and stores data into an object
@@ -160,17 +161,17 @@ class Bartender extends React.Component {
         drink.prep = cleaned[i][1];
       }
     }
-    console.log('end of parseInfobox');
+    // console.log('end of parseInfobox');
     return drink;
   }
 
   //Handles click
   getDrink = async () => {
-    // for (let i = 0; i <this.state.drinklinks.length;i++){
-    //   await this.getDrinkInfo(i);
-    // }
-    await this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
-    await this.setState({clicked: true});
+    for (let i = 0; i <this.state.drinklinks.length;i++){
+      await this.getDrinkInfo(i);
+    }
+    // await this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
+    // await this.setState({clicked: true});
     console.log('end of getDrink');
   }
 
