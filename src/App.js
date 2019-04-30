@@ -184,12 +184,27 @@ class Bartender extends React.Component {
     );
   }
 
+  //Get served actual text
+  getServed = (served) => {
+    const values = {"straight": "Straight, without ice",
+                    "rocks": "On the rocks",
+                    "blended": "Blended with ice"
+                  };
+    if (served in values){
+      served = values[served];
+    }
+    return served;
+  }
+
   //Generates content
   generateContent = () => {
+    let served = this.getServed(this.state.served);
+    // <img src="whiskey.svg"/>
+
     return(
       <div className= "Bartender-content">
-        <div>{this.state.name}</div>
-        <div>{this.state.served}</div>
+        <div className= "Bartender-title">{this.state.name}</div>
+        <div>{served}</div>
         <div>{this.state.garnish}</div>
         <div>{this.state.drinkware}</div>
         <div>{this.state.ingredients}</div>
