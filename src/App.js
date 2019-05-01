@@ -167,11 +167,11 @@ class Bartender extends React.Component {
 
   //Handles click
   getDrink = async () => {
-    for (let i = 0; i <this.state.drinklinks.length;i++){
-      await this.getDrinkInfo(i);
-    }
-    // await this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
-    // await this.setState({clicked: true});
+    // for (let i = 0; i <this.state.drinklinks.length;i++){
+    //   await this.getDrinkInfo(i);
+    // }
+    await this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
+    await this.setState({clicked: true});
     console.log('end of getDrink');
   }
 
@@ -185,8 +185,9 @@ class Bartender extends React.Component {
     );
   }
 
-  //Get served actual text
-  getServed = (served) => {
+  //Generate served actual text
+  generateServed = () => {
+    let served = this.state.served;
     const values = {"straight": "Straight, without ice",
                     "rocks": "On the rocks",
                     "blended": "Blended with ice"
@@ -194,20 +195,54 @@ class Bartender extends React.Component {
     if (served in values){
       served = values[served];
     }
-    return served;
+    return (
+      <div>
+        {served}
+      </div>
+    );
+  }
+
+  //Get drinkware image
+  generateDrinkwareImage = () => {
+    let drinkware = this.state.drinkware;
+    const values = {"cocktail":"",
+                    "poco":"",
+                    "hurricane":"",
+                    "winew":"",
+                    "collins":"",
+                    "highball":"",
+                    "shot":"",
+                    "margarita":"",
+                    "flute":"",
+                    "coffee":"",
+                    "old":"",
+
+                  };
+    let ret = undefined;
+    if (drinkware in values){
+      ret = drinkware + ".png";
+    }
+    return (
+      <div className="Bartender-imagewrapper">
+        <img className="Bartender-image" src={ret} alt="dummyalt"/>
+      </div>
+    );
   }
 
   //Generates content
   generateContent = () => {
-    let served = this.getServed(this.state.served);
     // <img src="whiskey.svg"/>
+
+    if (this.state.clicked === false){
+      return (<div className="Bartender-content"></div>);
+    }
 
     return(
       <div className= "Bartender-content">
         <div className= "Bartender-title">{this.state.name}</div>
-        <div>{served}</div>
+        {this.generateDrinkwareImage()}
+        {this.generateServed()}
         <div>{this.state.garnish}</div>
-        <div>{this.state.drinkware}</div>
         <div>{this.state.ingredients}</div>
         <div>{this.state.prep}</div>
       </div>
