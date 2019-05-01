@@ -195,11 +195,7 @@ class Bartender extends React.Component {
     if (served in values){
       served = values[served];
     }
-    return (
-      <div>
-        {served}
-      </div>
-    );
+    return served;
   }
 
   //Get drinkware image
@@ -216,15 +212,78 @@ class Bartender extends React.Component {
                     "flute":"",
                     "coffee":"",
                     "old":"",
-
                   };
-    let ret = undefined;
+    let ret = "";
     if (drinkware in values){
       ret = drinkware + ".png";
     }
     return (
-      <div className="Bartender-imagewrapper">
         <img className="Bartender-image" src={ret} alt="dummyalt"/>
+    );
+  }
+
+  //Generate drinkware text
+  generateDrinkwareText = () => {
+    const values = {"cocktail":"Cocktail glass",
+                    "poco":"Poco grande glass",
+                    "hurricane":" Hurricane glass",
+                    "winew":"Wine glass",
+                    "collins":"Collins glass",
+                    "highball":"Highball glass",
+                    "shot":"Shot glass",
+                    "margarita":"Margarita glass",
+                    "flute":"Champagne flute",
+                    "coffee":"Irish coffee mug",
+                    "old":"Old fashioned glass",
+                  };
+    let drinkware = this.state.drinkware;
+    if (drinkware in values){
+      drinkware = values[drinkware];
+    }
+    return drinkware;
+  }
+
+  //Generate ingredients
+  generateIngredients = () => {
+    let ret = [];
+    for (let i = 0; i < this.state.ingredients.length; i++){
+      ret.push(<li key={this.state.ingredients[i]}>{this.state.ingredients[i]}</li>);
+    }
+    return(
+      <ul className="Bartender-ingredientslist">
+        {ret}
+      </ul>
+    );
+  }
+
+  //Generate garnish
+  generateGarnish = () => {
+    // console.log(this.state.garnish);
+    if (this.state.garnish === "") {
+      return <span />;
+    } else {
+      return (
+        <span>
+          <span className="Bartender-sectionheader">Garnish: </span>
+          <span className="Bartender-sectiontext">{this.state.garnish}</span>
+          <br /><br />
+        </span>
+      );
+    }
+  }
+
+  //Generate content text
+  generateContentText = () => {
+
+    return (
+      <div className="Bartender-contenttext">
+        {this.generateDrinkwareImage()}
+        <span className="Bartender-sectionheader">Drinkware: </span><span className="Bartender-sectiontext">{this.generateDrinkwareText()}</span><br /><br />
+        <span className="Bartender-sectionheader">Served: </span><span className="Bartender-sectiontext">{this.generateServed()}</span><br /><br />
+        <span className="Bartender-sectionheader">Ingredients:</span>
+        {this.generateIngredients()}
+        {this.generateGarnish()}
+        <span className="Bartender-sectionheader">Preparation:</span><br /><span className="Bartender-preptext">{this.state.prep}</span>
       </div>
     );
   }
@@ -234,17 +293,13 @@ class Bartender extends React.Component {
     // <img src="whiskey.svg"/>
 
     if (this.state.clicked === false){
-      return (<div className="Bartender-content"></div>);
+      return (<div></div>);
     }
 
     return(
       <div className= "Bartender-content">
         <div className= "Bartender-title">{this.state.name}</div>
-        {this.generateDrinkwareImage()}
-        {this.generateServed()}
-        <div>{this.state.garnish}</div>
-        <div>{this.state.ingredients}</div>
-        <div>{this.state.prep}</div>
+        {this.generateContentText()}
       </div>
     )
   }
