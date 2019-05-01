@@ -1,9 +1,6 @@
 import React from 'react';
 import './App.css';
 
-//still need to figure out how to handle drinks that are variations, '#' in the linke
-//still need to figure out how to handle infoboxs that dont haveinformation
-
 class Bartender extends React.Component {
   constructor(props){
     super(props);
@@ -18,7 +15,6 @@ class Bartender extends React.Component {
       drinkware: null,
       ingredients: null,
       prep: null,
-      timing: null,
       fulllink: null,
     };
   }
@@ -72,8 +68,7 @@ class Bartender extends React.Component {
     this.setState({ingredients:parsed.ingredients});
     this.setState({prep:parsed.prep});
     this.setState({fulllink: fulllink});
-    //console.log(n, parsed.name, parsed.drinkware, 'end of getDrinkInfo');
-    console.log(n, parsed.drinkware);
+    //console.log(n, parsed.name, 'end of getDrinkInfo');
   }
 
   //Takes text from fetched JSON from getDrinkInfo() and parses it, and stores data into an object
@@ -175,7 +170,7 @@ class Bartender extends React.Component {
     // }
     await this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
     await this.setState({clicked: true});
-    console.log('end of getDrink');
+    // console.log('end of getDrink');
   }
 
   //Generates button
@@ -186,19 +181,6 @@ class Bartender extends React.Component {
         <button className='Bartender-button' onClick={() => this.getDrink()}>{buttontext}</button>
       </div>
     );
-  }
-
-  //Generate served actual text
-  generateServed = () => {
-    let served = this.state.served;
-    const values = {"straight": "Straight, without ice",
-                    "rocks": "On the rocks",
-                    "blended": "Blended with ice"
-                  };
-    if (served in values){
-      served = values[served];
-    }
-    return served;
   }
 
   //Get drinkware image
@@ -243,25 +225,48 @@ class Bartender extends React.Component {
     if (drinkware in values){
       drinkware = values[drinkware];
     }
-    return drinkware;
+    return (
+      <span>
+        <span className="Bartender-sectionheader">Drinkware: </span><span className="Bartender-sectiontext">{drinkware}</span><br /><br />
+      </span>
+    );
+  }
+
+  //Generate served actual text
+  generateServedText = () => {
+    let served = this.state.served;
+    const values = {"straight": "Straight, without ice",
+                    "rocks": "On the rocks",
+                    "blended": "Blended with ice"
+                  };
+    if (served in values){
+      served = values[served];
+    }
+    return (
+      <span>
+        <span className="Bartender-sectionheader">Served: </span><span className="Bartender-sectiontext">{served}</span><br /><br />
+      </span>
+    );
   }
 
   //Generate ingredients
-  generateIngredients = () => {
+  generateIngredientsText = () => {
     let ret = [];
     for (let i = 0; i < this.state.ingredients.length; i++){
       ret.push(<li key={this.state.ingredients[i]}>{this.state.ingredients[i]}</li>);
     }
     return(
-      <ul className="Bartender-ingredientslist">
-        {ret}
-      </ul>
+      <span>
+        <span className="Bartender-sectionheader">Ingredients:</span>
+        <ul className="Bartender-ingredientslist">
+          {ret}
+        </ul>
+      </span>
     );
   }
 
   //Generate garnish
   generateGarnish = () => {
-    // console.log(this.state.garnish);
     if (this.state.garnish === "") {
       return <span />;
     } else {
@@ -277,39 +282,32 @@ class Bartender extends React.Component {
 
   //Generate content text
   generateContentText = () => {
-
     return (
-      <div className="Bartender-contenttext">
-        {this.generateDrinkwareImage()}
-        <span className="Bartender-sectionheader">Drinkware: </span><span className="Bartender-sectiontext">{this.generateDrinkwareText()}</span><br /><br />
-        <span className="Bartender-sectionheader">Served: </span><span className="Bartender-sectiontext">{this.generateServed()}</span><br /><br />
-        <span className="Bartender-sectionheader">Ingredients:</span>
-        {this.generateIngredients()}
-        {this.generateGarnish()}
-        <span className="Bartender-sectionheader">Preparation:</span><br /><span className="Bartender-preptext">{this.state.prep}</span>
+      <div className= "Bartender-content">
+        <div className= "Bartender-title"><a href={this.state.fulllink} target="_blank" rel="noopener noreferrer">{this.state.name}</a></div>
+        <div className="Bartender-contenttext">
+          {this.generateDrinkwareImage()}
+          {this.generateDrinkwareText()}
+          {this.generateServedText()}
+          {this.generateIngredientsText()}
+          {this.generateGarnish()}
+          <span className="Bartender-sectionheader">Preparation:</span><br /><span className="Bartender-sectiontext">{this.state.prep}</span>
+        </div>
       </div>
     );
   }
 
   //Generates content
   generateContent = () => {
-    // <img src="whiskey.svg"/>
-
     if (this.state.clicked === false){
       return (<div></div>);
     }
-
-    return(
-      <div className= "Bartender-content">
-        <div className= "Bartender-title"><a href={this.state.fulllink} target="_blank" rel="noopener noreferrer">{this.state.name}</a></div>
-        {this.generateContentText()}
-      </div>
-    )
+    return (this.generateContentText());
   }
 
   componentDidMount = async () => {
     await this.getDrinkLinks();
-    console.log('endofdidmount');
+    //console.log('endofdidmount');
   }
 
   componentDidUpdate = () => {
