@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/bartender/static/css/main.dfd89ae6.chunk.css",
+    "main.js": "/bartender/static/js/main.9f4995fd.chunk.js",
+    "main.js.map": "/bartender/static/js/main.9f4995fd.chunk.js.map",
+    "runtime~main.js": "/bartender/static/js/runtime~main.a6274a12.js",
+    "runtime~main.js.map": "/bartender/static/js/runtime~main.a6274a12.js.map",
+    "static/js/2.c3c80b0d.chunk.js": "/bartender/static/js/2.c3c80b0d.chunk.js",
+    "static/js/2.c3c80b0d.chunk.js.map": "/bartender/static/js/2.c3c80b0d.chunk.js.map",
+    "index.html": "/bartender/index.html",
+    "precache-manifest.0b77c2ff4e117fa5d080f98bfdd73bf7.js": "/bartender/precache-manifest.0b77c2ff4e117fa5d080f98bfdd73bf7.js",
+    "service-worker.js": "/bartender/service-worker.js",
+    "static/css/main.dfd89ae6.chunk.css.map": "/bartender/static/css/main.dfd89ae6.chunk.css.map"
+  }
+}
