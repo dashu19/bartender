@@ -61,7 +61,7 @@ class Bartender extends React.Component {
     const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&redirects=true&format=json&page=';
     const link = this.state.drinklinks[n];
     const url1 = url + link[0];
-    const fulllink = 'https://en.wikipedia.org/wiki/' + link;
+    const fulllink = 'https://en.wikipedia.org/wiki/' + link[0];
     const response = await fetch(url1);
     const json = await response.json();
     let parsed = this.parseInfobox(json.parse.wikitext['*'],link[link.length - 1]);
