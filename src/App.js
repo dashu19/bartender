@@ -301,7 +301,7 @@ class Bartender extends React.Component {
 
     return(
       <div className= "Bartender-content">
-        <div className= "Bartender-title"><a href={this.state.fulllink} target="_blank">{this.state.name}</a></div>
+        <div className= "Bartender-title"><a href={this.state.fulllink} target="_blank" rel="noopener noreferrer">{this.state.name}</a></div>
         {this.generateContentText()}
       </div>
     )
