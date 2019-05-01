@@ -19,6 +19,7 @@ class Bartender extends React.Component {
       ingredients: null,
       prep: null,
       timing: null,
+      fulllink: null,
     };
   }
 
@@ -60,6 +61,7 @@ class Bartender extends React.Component {
     const url = 'https://en.wikipedia.org/w/api.php?action=parse&origin=*&prop=wikitext&redirects=true&format=json&page=';
     const link = this.state.drinklinks[n];
     const url1 = url + link[0];
+    const fulllink = 'https://en.wikipedia.org/wiki/' + link;
     const response = await fetch(url1);
     const json = await response.json();
     let parsed = this.parseInfobox(json.parse.wikitext['*'],link[link.length - 1]);
@@ -69,6 +71,7 @@ class Bartender extends React.Component {
     this.setState({drinkware:parsed.drinkware});
     this.setState({ingredients:parsed.ingredients});
     this.setState({prep:parsed.prep});
+    this.setState({fulllink: fulllink});
     //console.log(n, parsed.name, parsed.drinkware, 'end of getDrinkInfo');
     console.log(n, parsed.drinkware);
   }
@@ -298,7 +301,7 @@ class Bartender extends React.Component {
 
     return(
       <div className= "Bartender-content">
-        <div className= "Bartender-title">{this.state.name}</div>
+        <div className= "Bartender-title"><a href={this.state.fulllink} target="_blank">{this.state.name}</a></div>
         {this.generateContentText()}
       </div>
     )

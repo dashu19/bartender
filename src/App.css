@@ -58,13 +58,27 @@
 
 .Bartender-title{
   border: 0px solid white;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   text-align: center;
   width: 400px;
   /* height: 20px; */
   color: white;
-  font-size: 30px;
+  font-size: 2.3em;
   display: inline-block;
+}
+
+a{
+  color: inherit;
+  text-decoration: inherit;
+  transition: .25s;
+}
+
+a:hover{
+  color: darkgray;
+}
+
+a:active{
+  color: gray;
 }
 
 .Bartender-imagewrapper{
@@ -78,6 +92,8 @@
   height: 150px;
   border: 2px solid gray;
   border-radius: 15px;
+  margin-right: 20px;
+  margin-left: 15px;
   /* display: inline-block; */
   float: right;
 
