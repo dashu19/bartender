@@ -6,9 +6,74 @@
   /* text-align: center; */
 }
 
+.Bartender-aboutheader{
+  margin: auto;
+  margin-top: 0px;
+  height: 25px;
+  width: 400px;
+  position: relative;
+}
+
+.Bartender-aboutbutton{
+  text-align: center;
+  border: 0px solid white;
+  outline: none;
+  background-color: inherit;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 25px;
+  width: 300px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  font-size: .8em;
+  color: darkgray;
+  text-transform: uppercase;
+  font-family: 'Spectral', serif;
+  font-weight: 400;
+  transition: .5s;
+}
+
+.Bartender-aboutbutton:hover{
+  color: gray;
+}
+
+.Bartender-abouttextwrapper{
+  margin: auto;
+  margin-top: 75px;
+  border: 3px solid white;
+  background-color: black;
+  border-radius: 30px;
+  /* height: 500px; */
+  width: 550px;
+  text-align: center;
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.Bartender-abouttext{
+  display: inline-block;
+  margin: auto;
+  border: 0px solid red;
+  /* overflow: auto; */
+  width: 525px;
+  line-height: 1em;
+  color: gray;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+.Bartender-aboutlinks{
+  color: white;
+  text-decoration: inherit;
+}
+
+
 .Bartender-header{
   margin: auto;
-  margin-top: 150px;
+  margin-top: 75px;
   border: 0px solid white;
   height: 50px;
   width: 400px;
@@ -17,7 +82,6 @@
 
 .Bartender-button{
   text-align: center;
-  text-transform: uppercase;
   border: 0px solid white;
   outline: none;
   background-color: inherit;

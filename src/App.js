@@ -7,6 +7,7 @@ class Bartender extends React.Component {
     this.state = {
       initial: true,
       clicked: false,
+      about: false,
       drinklinks: [],
       drink: null,
       name: null,
@@ -163,26 +164,6 @@ class Bartender extends React.Component {
     return drink;
   }
 
-  //Handles click
-  getDrink = async () => {
-    // for (let i = 0; i <this.state.drinklinks.length;i++){
-    //   await this.getDrinkInfo(i);
-    // }
-    await this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
-    await this.setState({clicked: true});
-    // console.log('end of getDrink');
-  }
-
-  //Generates button
-  generateButton = () => {
-    let buttontext = (this.state.clicked) ? 'Another':'Surprise';
-    return(
-      <div className='Bartender-header'>
-        <button className='Bartender-button' onClick={() => this.getDrink()}>{buttontext}</button>
-      </div>
-    );
-  }
-
   //Get drinkware image
   generateDrinkwareImage = () => {
     let drinkware = this.state.drinkware;
@@ -305,6 +286,62 @@ class Bartender extends React.Component {
     return (this.generateContentText());
   }
 
+  //Handles click
+  getDrink = async () => {
+    // for (let i = 0; i <this.state.drinklinks.length;i++){
+    //   await this.getDrinkInfo(i);
+    // }
+    await this.getDrinkInfo(Math.floor(Math.random() * this.state.drinklinks.length));
+    await this.setState({clicked: true});
+    // console.log('end of getDrink');
+  }
+
+  //Generates button
+  generateButton = () => {
+    let buttontext = (this.state.clicked) ? 'Another':'Surprise';
+    return(
+      <div className='Bartender-header'>
+        <button className='Bartender-button' onClick={() => this.getDrink()}>{buttontext}</button>
+      </div>
+    );
+  }
+
+  //Generate about button
+  generateAboutButton = () => {
+    let buttontext = (this.state.about) ? 'Back':'About';
+    return(
+      <div className='Bartender-aboutheader'>
+        <button className='Bartender-aboutbutton' onClick={() => this.getAbout()}>{buttontext}</button>
+      </div>
+    );
+  }
+
+  //Generate about text
+  generateAboutText = () => {
+    return(
+      <div className="Bartender-abouttextwrapper">
+        <div className="Bartender-abouttext">
+          This is a small React app created by <a className="Bartender-aboutlinks" href="https://github.com/dashu19" target="_blank" rel="noopener noreferrer">dashu19</a>.<br /><br />
+
+          When the app loads and mounts, it fetches the links of the drinks listed on <a className="Bartender-aboutlinks" href="https://en.wikipedia.org/wiki/List_of_IBA_official_cocktails" target="_blank" rel="noopener noreferrer">this Wikipedia page of IBA official cocktails</a> using <a className="Bartender-aboutlinks" href="https://www.mediawiki.org/wiki/API:Main_page" target="_blank" rel="noopener noreferrer">Wikipedia's API</a>.<br /><br />
+
+          By clicking the "Surprise" button (which will subsequently show the text "Another"), the app will then randomly select one of those links and fetch data from the corresponding Wikipedia page.<br /><br />
+
+          The app will then parse through the fetched data (a snippit of wikitext, Wikipedia's own markup language used to make their pages) to get the relevant information to present to the user in a small "drink information card".<br /><br />
+
+          You can see the code <a className="Bartender-aboutlinks" href="https://github.com/dashu19/bartender" target="_blank" rel="noopener noreferrer">here</a>.
+        </div>
+      </div>
+
+    );
+  }
+
+  //handles click for about
+  getAbout = () => {
+    let newabout = !this.state.about;
+    this.setState({about: newabout});
+  }
+
   componentDidMount = async () => {
     await this.getDrinkLinks();
     //console.log('endofdidmount');
@@ -315,12 +352,22 @@ class Bartender extends React.Component {
   }
 
   render = () => {
-    return(
-      <div>
-        {this.generateButton()}
-        {this.generateContent()}
-      </div>
-    );
+    if (this.state.about){
+      return(
+        <div>
+        {this.generateAboutButton()}
+        {this.generateAboutText()}
+        </div>
+      );
+    } else{
+      return(
+        <div>
+          {this.generateAboutButton()}
+          {this.generateButton()}
+          {this.generateContent()}
+        </div>
+      );
+    }
   }
 }
 
