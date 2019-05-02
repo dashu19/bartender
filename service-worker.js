@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.0/workbox-sw.js");
 
 importScripts(
-  "/bartender/precache-manifest.eadf54957c0ace71e5342cab97845a37.js"
+  "/bartender/precache-manifest.fd1bdc375bb808b78dd85622a73ef314.js"
 );
 
 self.addEventListener('message', (event) => {
